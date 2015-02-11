@@ -4,9 +4,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.OData;
 using TheBookStore.Contracts;
 using TheBookStore.Datastores;
 using TheBookStore.DataTransferObjects;
+using TheBookStore.Infrastructure;
 using TheBookStore.Models;
 
 
@@ -17,11 +19,12 @@ namespace TheBookStore.Controllers
 
         private IUnitOfWork unit;
 
-        public BooksController()
+        public BooksController(IUnitOfWork unit)
         {
-            this.unit = new SampleDataStore();
+            this.unit = unit;
         }
 
+        [EnableQueryAttribute]
         //convert books to books dto and send response
         public IHttpActionResult Get()
         {
@@ -30,6 +33,7 @@ namespace TheBookStore.Controllers
             return Ok(response);
         }
 
+        [EnableQueryAttribute]
         //allow searchable books
         public IHttpActionResult Get(string query)
         {
@@ -43,6 +47,8 @@ namespace TheBookStore.Controllers
             return Ok(response);
         }
 
+        [EnableQueryAttribute]
+        [CheckNulls]
         //expose api to return a single book
         public IHttpActionResult Get(int id)
         {
